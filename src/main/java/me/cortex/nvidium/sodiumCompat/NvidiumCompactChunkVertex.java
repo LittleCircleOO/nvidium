@@ -1,7 +1,6 @@
 package me.cortex.nvidium.sodiumCompat;
 
 
-import me.jellysquid.mods.sodium.client.gl.attribute.GlVertexAttributeFormat;
 import me.jellysquid.mods.sodium.client.gl.attribute.GlVertexFormat;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkMeshAttribute;
@@ -28,20 +27,20 @@ public class NvidiumCompactChunkVertex implements ChunkVertexType {
     private static final float TEXTURE_SCALE = (1.0f / TEXTURE_MAX_VALUE);
 
 
-    @Override
-    public float getTextureScale() {
-        return TEXTURE_SCALE;
-    }
-
-    @Override
-    public float getPositionScale() {
-        return MODEL_SCALE;
-    }
-
-    @Override
-    public float getPositionOffset() {
-        return -MODEL_ORIGIN;
-    }
+//    @Override
+//    public float getTextureScale() {
+//        return TEXTURE_SCALE;
+//    }
+//
+//    @Override
+//    public float getPositionScale() {
+//        return MODEL_SCALE;
+//    }
+//
+//    @Override
+//    public float getPositionOffset() {
+//        return -MODEL_ORIGIN;
+//    }
 
     @Override
     public GlVertexFormat<ChunkMeshAttribute> getVertexFormat() {
@@ -50,15 +49,19 @@ public class NvidiumCompactChunkVertex implements ChunkVertexType {
 
     @Override
     public ChunkVertexEncoder getEncoder() {
-        return (ptr, material, vertex, sectionIndex) -> {
-            int light = compactLight(vertex.light);
+        return (ptr, material, vertices, sectionIndex) -> {
+            for(var vertex : vertices) {
+                int light = compactLight(vertex.light);
 
-            MemoryUtil.memPutInt(ptr + 0, (encodePosition(vertex.x) << 0) | (encodePosition(vertex.y) << 16));
-            MemoryUtil.memPutInt(ptr + 4, (encodePosition(vertex.z) << 0) | (encodeDrawParameters(material) << 16) | ((light&0xFF)<<24));
-            MemoryUtil.memPutInt(ptr + 8, (encodeColor(vertex.color) << 0) | (((light>>8)&0xFF) << 24));
-            MemoryUtil.memPutInt(ptr + 12, encodeTexture(vertex.u, vertex.v));
+                MemoryUtil.memPutInt(ptr + 0, (encodePosition(vertex.x) << 0) | (encodePosition(vertex.y) << 16));
+                MemoryUtil.memPutInt(ptr + 4, (encodePosition(vertex.z) << 0) | (encodeDrawParameters(material) << 16) | ((light & 0xFF) << 24));
+                MemoryUtil.memPutInt(ptr + 8, (encodeColor(vertex.color) << 0) | (((light >> 8) & 0xFF) << 24));
+                MemoryUtil.memPutInt(ptr + 12, encodeTexture(vertex.u, vertex.v));
 
-            return ptr + STRIDE;
+
+                ptr += STRIDE;
+            }
+            return ptr;
         };
     }
 

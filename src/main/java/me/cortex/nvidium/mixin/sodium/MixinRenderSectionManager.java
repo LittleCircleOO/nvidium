@@ -15,7 +15,7 @@ import me.jellysquid.mods.sodium.client.render.chunk.region.RenderRegionManager;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.vertex.format.ChunkVertexType;
-import me.jellysquid.mods.sodium.client.render.texture.SpriteUtil;
+import net.caffeinemc.mods.sodium.api.texture.SpriteUtil;
 import me.jellysquid.mods.sodium.client.render.viewport.Viewport;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
@@ -164,7 +164,7 @@ public class MixinRenderSectionManager implements INvidiumWorldRendererGetter {
                 return;
             }
             for (var sprite : sprites) {
-                SpriteUtil.markSpriteActive(sprite);
+                SpriteUtil.INSTANCE.markSpriteActive(sprite);
             }
         }
     }
